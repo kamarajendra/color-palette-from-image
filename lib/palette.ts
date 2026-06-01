@@ -57,11 +57,43 @@ function quantizePixels(pixels: Uint8ClampedArray, maxColors: number): Map<strin
   return new Map(sorted.slice(0, maxColors).map((c) => [`${Math.round(c.r / 20) * 20},${Math.round(c.g / 20) * 20},${Math.round(c.b / 20) * 20}`, c]));
 }
 
+function colorDistance(r1: number, g1: number, b1: number, r2: number, g2: number, b2: number) {
+  return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+}
+
+function mergeSimilarColors(
+  colors: { r: number; g: number; b: number; count: number }[],
+  threshold = 60,
+): { r: number; g: number; b: number; count: number }[] {
+  const merged: { r: number; g: number; b: number; count: number }[] = [];
+
+  for (const color of colors) {
+    let found = false;
+    for (const existing of merged) {
+      if (colorDistance(color.r, color.g, color.b, existing.r, existing.g, existing.b) < threshold) {
+        const totalCount = existing.count + color.count;
+        existing.r = Math.round((existing.r * existing.count + color.r * color.count) / totalCount);
+        existing.g = Math.round((existing.g * existing.count + color.g * color.count) / totalCount);
+        existing.b = Math.round((existing.b * existing.count + color.b * color.count) / totalCount);
+        existing.count = totalCount;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      merged.push({ ...color });
+    }
+  }
+
+  return merged;
+}
+
 export function extractPalette(imageData: ImageData, maxColors = 8): Swatch[] {
   const raw = quantizePixels(imageData.data, maxColors * 3);
-  const total = Array.from(raw.values()).reduce((sum, c) => sum + c.count, 0);
+  const merged = mergeSimilarColors(Array.from(raw.values()));
+  const total = merged.reduce((sum, c) => sum + c.count, 0);
 
-  return Array.from(raw.values())
+  return merged
     .sort((a, b) => b.count - a.count)
     .slice(0, maxColors)
     .map((c) => {
