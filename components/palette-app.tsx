@@ -101,9 +101,41 @@ export function PaletteApp() {
                 ))}
               </div>
               <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">CSS variables</div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">CSS variables</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const css = palette.map((s, i) => `  --color-${i + 1}: ${s.oklch};`).join("\n");
+                      const code = `:root {\n${css}\n}`;
+                      navigator.clipboard.writeText(code);
+                    }}
+                    className="text-xs text-purple-600 hover:text-purple-800"
+                  >
+                    Copy
+                  </button>
+                </div>
                 <pre className="overflow-x-auto text-xs leading-relaxed text-zinc-600">
                   {palette.map((s, i) => `--color-${i + 1}: ${s.oklch};`).join("\n")}
+                </pre>
+              </div>
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Tailwind v4 config</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const colors = palette.map((s, i) => `    ${i + 1}: '${s.oklch}'`).join(",\n");
+                      const code = `@import "tailwindcss";\n\n@theme {\n  --color-palette-: {\n${colors},\n  };\n}`;
+                      navigator.clipboard.writeText(code);
+                    }}
+                    className="text-xs text-purple-600 hover:text-purple-800"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre className="overflow-x-auto text-xs leading-relaxed text-zinc-600">
+                  {`@theme {\n  --color-palette-1: '${palette[0]?.oklch ?? ""}';\n  ...\n}`}
                 </pre>
               </div>
             </div>
