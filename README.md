@@ -1,6 +1,14 @@
 # Color Palette from Image
 
+[![CI](https://github.com/kamarajendra/color-palette-from-image/actions/workflows/ci.yml/badge.svg)](https://github.com/kamarajendra/color-palette-from-image/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/kamarajendra/color-palette-from-image)](https://github.com/kamarajendra/color-palette-from-image/releases)
+[![License](https://img.shields.io/github/license/kamarajendra/color-palette-from-image)](https://github.com/kamarajendra/color-palette-from-image/blob/main/LICENSE)
+
 Upload an image and extract its dominant colors as OKLCH, HEX, and RGB values. No server, no API, no uploads. Everything runs in the browser.
+
+## Screenshot
+
+![Color Palette from Image](public/screenshots/color-palette-dashboard.png)
 
 ## Features
 
